@@ -1,0 +1,28 @@
+/* state diagram for the VC3 Request */
+
+digraph finite_state_machine {
+    /*rankdir=LR;*/
+    size="12"
+    node [shape = doublecircle]; Created Cleaned;
+    node [shape = circle];
+
+    Created -> Accepted [ label = "accepted" ];
+    Created -> Rejected;
+    Accepted -> Aknownledged [ label = "master noticed it" ];
+    Accepted -> Cancelled [label = "user cancels" ];
+
+    Aknownledged -> Cancelled [label = "user cancels" ];
+    Aknownledged -> Idle;
+
+    Idle -> Cancelled [ label = "user cancels" ];
+    Idle -> Running [ label = "master is OK" ];
+    Idle -> TimedOut [ label = "timeout" ];
+    Running -> ShutdownPending [ label "user requests cluster to finish" ];
+
+    ShutdownPending -> Finished;
+    TimedOut -> Finished;
+    Cancelled -> Finished;
+    Rejected -> Finished;
+    Finished -> Cleaned;
+    
+}
