@@ -1,10 +1,10 @@
-/* state diagram for the VC3 Request */
-
-digraph finite_state_machine {
-    /*rankdir=LR;*/
-    size="12"
-    node [shape = doublecircle]; Created Cleaned;
-    node [shape = circle];
+digraph Request {
+    rankdir=TB;
+    size="20,20";
+    ratio="fill";
+    node [shape = doublecircle, fixedsize="true", width="3", fontsize="28"]; Created Cleaned;
+    node [shape = circle, fixedsize="true", width="3", fontsize="28"];
+    edge [fontsize="28"]
 
     Created -> Accepted [ label = "accepted" ];
     Created -> Rejected;
