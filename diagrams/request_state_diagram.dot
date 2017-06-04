@@ -17,7 +17,7 @@ digraph Request {
     Idle -> Cancelled [ label = "user cancels" ];
     Idle -> Running [ label = "master is OK" ];
     Idle -> TimedOut [ label = "timeout" ];
-    Running -> ShutdownPending [ label "user requests cluster to finish" ];
+    Running -> ShutdownPending [ label = "user requests cluster to finish" ];
 
     ShutdownPending -> Finished;
     TimedOut -> Finished;
