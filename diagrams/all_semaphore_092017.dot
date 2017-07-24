@@ -1,0 +1,98 @@
+digraph vc3 {
+    compound    = true;
+    #concentrate = true;
+    labelloc    = "tl";
+    rankdir     = "LR";
+
+    node [shape=box, style=filled];
+
+
+    subgraph cluster_web {
+        label = "www-dev:80";
+
+        nginx         [fillcolor=green];
+        vc3lib_web    [label = "vc3\npython\nlib"][shape="none"][fillcolor = red];
+        vc3client_web [label = "vc3\nclient"][fillcolor = yellow];
+
+        nginx         -> vc3lib_web    [style = dotted][dir = both];
+        vc3lib_web    -> vc3client_web [style = dotted][dir = both];
+
+    }
+
+    subgraph cluster_static {
+        label = "static infrastructure";
+
+        vmmaster     [label = "vm"][shape = none][fillcolor = yellow];
+        apf          [label = "Factory"][fillcolor = yellow];
+
+        subgraph cluster_infoservice {
+            label     = "";
+            infoservice  [fillcolor = green];
+            fsinfo       [label="file system"][fillcolor = green];
+            vminfo       [label = "vm"][shape = none][fillcolor = green];
+
+            infoservice   -> vminfo     [dir = none];
+            infoservice  -> fsinfo [dir = none];
+        }
+
+        subgraph cluster_headnode {
+            style     = filled;
+            fillcolor = yellow;
+
+            label = "vc3 head node";
+            
+            schedd [ label = "schedd" ];
+        }
+
+        subgraph cluster_master {
+            style     = filled;
+            fillcolor = yellow;
+
+            label = "master";
+
+            subgraph cluster_request_lc
+                {
+                    label = "Request Life Cycle";
+                    fillcolor = yellow;
+                    genconf [label = "generate\nfactory\nconfig"][fillcolor = red];
+                }
+        }
+
+        subgraph cluster_request_lc
+        {
+            label = "Request Life Cycle";
+            fillcolor = yellow;
+            genconf [label = "generate\nfactory\nconfig"][fillcolor = red];
+        }
+
+        infoservice  -> genconf      [label = "\n\n\n\n\nrequests", lhead = cluster_request_lc];
+        genconf      -> infoservice  [label = "push\lconfig\l", ltail = cluster_request_lc, style = dotted];
+
+        infoservice  -> apf         [label = "\npull\lconfig\l"][style = dotted];
+        apf          -> infoservice [label = "monitor"][style = dotted];
+
+        vmmaster     -> genconf     [lhead = cluster_master][dir = none];
+    }
+
+    subgraph cluster_dynamic {
+        label = "dynamic infrastructure";
+
+        subgraph cluster_resource {
+            label = "cluster resource";
+
+            slurm        [shape = none][fillcolor = green];
+            vc3builder   [label = "vc3-builder"][fillcolor = green];
+            glidein      [fillcolor = green];
+
+            slurm        -> glidein;
+            slurm        -> vc3builder  [style = dotted][label = "\n\n\n"];
+        }
+    }
+
+    vc3client_web -> infoservice   [ label = "request,\lallocation,\lresource\l" ][style = dotted];
+    infoservice   -> vc3client_web [ label = "\nmonitor" ][style = dotted];
+
+    apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
+
+    schedd       -> apf         [label = "manual\lquery\l"];
+}
