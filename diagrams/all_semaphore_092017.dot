@@ -41,7 +41,7 @@ digraph vc3 {
 
             label = "vc3 head node";
             
-            schedd [ label = "schedd" ];
+            schedd [ label = "schedd" ][ fillcolor = "green" ];
         }
 
         subgraph cluster_master {
