@@ -54,15 +54,8 @@ digraph vc3 {
                 {
                     label = "Request Life Cycle";
                     fillcolor = yellow;
-                    genconf [label = "generate\nfactory\nconfig"][fillcolor = red];
+                    genconf [label = "generate\nfactory\nconfig"][fillcolor = yellow];
                 }
-        }
-
-        subgraph cluster_request_lc
-        {
-            label = "Request Life Cycle";
-            fillcolor = yellow;
-            genconf [label = "generate\nfactory\nconfig"][fillcolor = red];
         }
 
         infoservice  -> genconf      [label = "\n\n\n\n\nrequests", lhead = cluster_request_lc];
@@ -80,7 +73,12 @@ digraph vc3 {
         subgraph cluster_resource {
             label = "cluster resource";
 
-            slurm        [shape = none][fillcolor = green];
+            subgraph cluster_resource_head_node {
+                label = "cluster head node";
+                vc3resourcetool [label = "vc3\nresource tool"][fillcolor = yellow];
+                slurm           [shape = none][fillcolor = green];
+            }
+
             vc3builder   [label = "vc3-builder"][fillcolor = green];
             glidein      [fillcolor = green];
 
@@ -95,4 +93,6 @@ digraph vc3 {
     apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
 
     schedd       -> apf         [label = "manual\lquery\l"];
+
+    infoservice -> vc3resourcetool [label = "\n\n\npull certs\land keys\l"];
 }
