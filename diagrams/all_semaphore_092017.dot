@@ -75,7 +75,7 @@ digraph vc3 {
 
             subgraph cluster_resource_head_node {
                 label = "cluster head node";
-                vc3resourcetool [label = "vc3\nresource tool"][fillcolor = yellow];
+                vc3resourcetool [label = "vc3\nresource tool"][fillcolor = green];
                 slurm           [shape = none][fillcolor = green];
             }
 
