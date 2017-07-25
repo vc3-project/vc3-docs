@@ -14,9 +14,12 @@ digraph vc3 {
         vc3lib_web    [label = "vc3\npython\nlib"][shape="none"][fillcolor = red];
         vc3client_web [label = "vc3\nclient"][fillcolor = yellow];
 
+        portal        [label = "vc3\nportal"][fillcolor = yellow];
+
         nginx         -> vc3lib_web    [style = dotted][dir = both];
         vc3lib_web    -> vc3client_web [style = dotted][dir = both];
 
+        portal        -> nginx         [dir = both];
     }
 
     subgraph cluster_static {
