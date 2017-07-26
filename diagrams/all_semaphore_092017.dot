@@ -95,7 +95,5 @@ digraph vc3 {
 
     apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
 
-    schedd       -> apf;
-
     infoservice -> vc3resourcetool [label = "\n\n\npull certs\land keys\l"];
 }
