@@ -11,13 +11,13 @@ digraph vc3 {
         label = "www-dev:80";
 
         nginx         [fillcolor=green];
-        vc3lib_web    [label = "vc3\npython\nlib"][shape="none"][fillcolor = red];
+        vc3lib_web    [label = "vc3\npython\nlib"][shape="none"][fillcolor = yellow];
         vc3client_web [label = "vc3\nclient"][fillcolor = yellow];
 
         portal        [label = "vc3\nportal"][fillcolor = yellow];
 
-        nginx         -> vc3lib_web    [style = dotted][dir = both];
-        vc3lib_web    -> vc3client_web [style = dotted][dir = both];
+        nginx         -> vc3lib_web    [dir = both];
+        vc3lib_web    -> vc3client_web [dir = both];
 
         portal        -> nginx         [dir = both];
     }
@@ -85,8 +85,8 @@ digraph vc3 {
             vc3builder   [label = "vc3-builder"][fillcolor = green];
             glidein      [fillcolor = green];
 
+            slurm        -> vc3builder;
             slurm        -> glidein;
-            slurm        -> vc3builder  [style = dotted][label = "\n\n\n"];
         }
     }
 
@@ -95,7 +95,7 @@ digraph vc3 {
 
     apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
 
-    schedd       -> apf         [label = "manual\lquery\l"];
+    schedd       -> apf;
 
     infoservice -> vc3resourcetool [label = "\n\n\npull certs\land keys\l"];
 }
