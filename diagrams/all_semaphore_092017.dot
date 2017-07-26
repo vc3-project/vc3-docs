@@ -30,12 +30,13 @@ digraph vc3 {
 
         subgraph cluster_infoservice {
             label     = "";
+            style     = invis;
             infoservice  [fillcolor = green];
             fsinfo       [label="file system"][fillcolor = green];
             vminfo       [label = "vm"][shape = none][fillcolor = green];
 
-            infoservice   -> vminfo     [dir = none];
-            infoservice  -> fsinfo [dir = none];
+            infoservice  -> vminfo  [dir = none];
+            infoservice  -> fsinfo  [dir = both];
         }
 
         subgraph cluster_headnode {
@@ -61,37 +62,37 @@ digraph vc3 {
                 }
         }
 
-        infoservice  -> genconf      [label = "\n\n\n\n\nrequests", lhead = cluster_request_lc];
+        infoservice  -> genconf      [label = "pull\lrequests\l", lhead = cluster_request_lc];
         genconf      -> infoservice  [label = "push\lconfig\l", ltail = cluster_request_lc, style = dotted];
 
-        infoservice  -> apf         [label = "\npull\lconfig\l"][style = dotted];
-        apf          -> infoservice [label = "monitor"][style = dotted];
+        infoservice  -> apf         [label = "pull\lconfig\l"][style = dotted];
+        apf          -> infoservice [label = "push\lmonitoring\l"][style = dotted];
 
         vmmaster     -> genconf     [lhead = cluster_master][dir = none];
     }
 
     subgraph cluster_dynamic {
         label = "dynamic infrastructure";
-
-        subgraph cluster_resource {
-            label = "cluster resource";
-
-            subgraph cluster_resource_head_node {
-                label = "cluster head node";
-                vc3resourcetool [label = "vc3\nresource tool"][fillcolor = green];
-                slurm           [shape = none][fillcolor = green];
-            }
-
-            vc3builder   [label = "vc3-builder"][fillcolor = green];
-            glidein      [fillcolor = green];
-
-            slurm        -> vc3builder;
-            slurm        -> glidein;
-        }
     }
 
-    vc3client_web -> infoservice   [ label = "request,\lallocation,\lresource\l" ][style = dotted];
-    infoservice   -> vc3client_web [ label = "\nmonitor" ][style = dotted];
+    subgraph cluster_resource {
+        label = "cluster resource";
+
+        subgraph cluster_resource_head_node {
+            label = "cluster head node";
+            vc3resourcetool [label = "vc3\nresource tool"][fillcolor = green];
+            slurm           [shape = none][fillcolor = green];
+        }
+
+        vc3builder   [label = "vc3-builder"][fillcolor = green];
+        glidein      [fillcolor = green];
+
+        slurm        -> vc3builder;
+        vc3builder   -> glidein;
+    }
+
+    vc3client_web -> infoservice   [ label = "push request,\lallocation,\lresource\l" ][style = dotted];
+    infoservice   -> vc3client_web [ label = "pull\lmonitor\l" ][style = dotted];
 
     apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
 
