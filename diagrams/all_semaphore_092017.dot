@@ -25,7 +25,7 @@ digraph vc3 {
     subgraph cluster_static {
         label = "static infrastructure";
 
-        vmmaster     [label = "vm"][shape = none][fillcolor = green];
+        vmmaster     [label = "vm"][shape = none][fillcolor = yellow];
         apf          [label = "Factory"][fillcolor = yellow];
 
         subgraph cluster_infoservice {
@@ -50,14 +50,14 @@ digraph vc3 {
 
         subgraph cluster_master {
             style     = filled;
-            fillcolor = yellow;
+            fillcolor = green;
 
             label = "master";
 
             subgraph cluster_request_lc
                 {
                     label = "Request Life Cycle";
-                    fillcolor = yellow;
+                    fillcolor = green;
                     genconf [label = "generate\nfactory\nconfig"][fillcolor = green];
                 }
         }
