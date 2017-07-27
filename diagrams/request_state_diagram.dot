@@ -1,28 +1,57 @@
-digraph Request {
-    rankdir=TB;
-    size="20,20";
-    ratio="fill";
-    node [shape = doublecircle, fixedsize="true", width="3", fontsize="28"]; Created Cleaned;
-    node [shape = circle, fixedsize="true", width="3", fontsize="28"];
-    edge [fontsize="28"]
+digraph requests {
+    compound = true;
+    #concentrate = true;
+    ratio = compress;
+    size="20";
+    rankdir="LR";
 
-    Created -> Accepted [ label = "accepted" ];
-    Created -> Rejected;
-    Accepted -> Aknownledged [ label = "master noticed it" ];
-    Accepted -> Cancelled [label = "user cancels" ];
+    ranksep = 0.25;
+    nodesep = 0.25;
 
-    Aknownledged -> Cancelled [label = "user cancels" ];
-    Aknownledged -> Idle;
+    node [fontsize=10]
+    edge [fontsize=10];
 
-    Idle -> Cancelled [ label = "user cancels" ];
-    Idle -> Running [ label = "master is OK" ];
-    Idle -> TimedOut [ label = "timeout" ];
-    Running -> ShutdownPending [ label = "user requests cluster to finish" ];
+    infoservice [shape = none ][ label = "" ];
 
-    ShutdownPending -> Finished;
-    TimedOut -> Finished;
-    Cancelled -> Finished;
-    Rejected -> Finished;
-    Finished -> Cleaned;
-    
+    subgraph cluster_normalstates {
+        style = invis;
+        new;
+        validated;
+        configured;
+        pending;
+        growing;
+        running;
+    }
+
+    subgraph cluster_endingstates {
+        style = invis;
+        shrinking;
+        terminating;
+        terminated;
+    }
+
+    infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequests\l" ];
+
+    new -> validated   [ label = "well\lformed" ];
+    new -> terminating [ label = "not\lwell\lformed\l" ];
+
+    validated -> configured  [ label = "factory\lconfigured\l" ][ style = dotted ];
+    validated -> terminating [ label = "configuration\ltimer\lexpired\l" ];
+
+    configured -> pending     [ label = "start" ][ style = dotted ];
+    configured -> terminating [ label = "start\ltimer\lexpired\l" ];
+
+    pending    -> growing     [ label = "at least\lone component\lof request\lfulfilled\l" ][ style = dotted ];
+    pending    -> terminating [ label = "factory\lreported\lerror\l" ][ style = dotted ];
+
+    growing    -> running     [ label = "all components\lof request\lfulfilled\l" ][ style = dotted ];
+    growing    -> shrinking   [ label = "factory\lreported\lerror" ][ style = dotted ];
+
+    running    -> shrinking   [ label = "\lgentle\lshutdown\l" ][ style = dotted ];
+    running    -> shrinking   [ label = "factory\lreported\lerror\l" ][ style = dotted ];
+
+    shrinking  -> terminating [ label = "no\lcomponents\lrunning\l"][ styel = dotted ];
+
+
+    terminating -> terminated [ label = "wait\lfor\lcleanup\l" ];
 }
