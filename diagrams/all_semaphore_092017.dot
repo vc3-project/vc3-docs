@@ -25,7 +25,7 @@ digraph vc3 {
     subgraph cluster_static {
         label = "static infrastructure";
 
-        vmmaster     [label = "vm"][shape = none][fillcolor = yellow];
+        vmmaster     [label = "vm"][shape = none][fillcolor = green];
         apf          [label = "Factory"][fillcolor = yellow];
 
         subgraph cluster_infoservice {
