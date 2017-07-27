@@ -58,12 +58,12 @@ digraph vc3 {
                 {
                     label = "Request Life Cycle";
                     fillcolor = yellow;
-                    genconf [label = "generate\nfactory\nconfig"][fillcolor = yellow];
+                    genconf [label = "generate\nfactory\nconfig"][fillcolor = green];
                 }
         }
 
         infoservice  -> genconf      [label = "pull\lrequests\l", lhead = cluster_request_lc];
-        genconf      -> infoservice  [label = "push\lconfig\l", ltail = cluster_request_lc, style = dotted];
+        genconf      -> infoservice  [label = "push\lconfig\l", ltail = cluster_request_lc];
 
         infoservice  -> apf         [label = "pull\lconfig\l"][style = dotted];
         apf          -> infoservice [label = "push\lmonitoring\l"][style = dotted];
@@ -91,7 +91,7 @@ digraph vc3 {
         vc3builder   -> glidein;
     }
 
-    vc3client_web -> infoservice   [ label = "push request,\lallocation,\lresource\l" ][style = dotted];
+    vc3client_web -> infoservice   [ label = "push request,\lallocation,\lresource\l" ];
     infoservice   -> vc3client_web [ label = "pull\lmonitor\l" ][style = dotted];
 
     apf          -> slurm       [label = "\n\nsubmit\ljobs\l"];
