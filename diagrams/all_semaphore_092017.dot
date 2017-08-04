@@ -65,8 +65,8 @@ digraph vc3 {
         infoservice  -> genconf      [label = "\npull\lrequests\l", lhead = cluster_request_lc];
         genconf      -> infoservice  [label = "push\lconfig\l", ltail = cluster_request_lc];
 
-        infoservice  -> apf         [label = "pull\lconfig\l"][style = dotted];
-        apf          -> infoservice [label = "push\lmonitoring\l"][style = dotted];
+        infoservice  -> apf         [label = "pull\lconfig\l"];
+        apf          -> infoservice [label = "push\lmonitoring\l"];
 
         vmmaster     -> genconf     [lhead = cluster_master][dir = none];
     }
