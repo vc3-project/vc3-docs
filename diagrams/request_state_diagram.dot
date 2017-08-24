@@ -37,7 +37,7 @@ digraph requests {
 
     {rank=same shrinking terminating terminated}
 
-    infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequests\l" ];
+    infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequest\l" ];
 
     new -> validated   [ label = "well\lformed" ];
 
