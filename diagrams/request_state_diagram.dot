@@ -3,55 +3,59 @@ digraph requests {
     #concentrate = true;
     ratio = compress;
     size="20";
-    rankdir="LR";
+    #rankdir="LR";
 
-    ranksep = 0.25;
-    nodesep = 0.25;
+    ranksep = 0.15;
+    nodesep = 0.15;
 
     node [fontsize=10]
     edge [fontsize=10];
 
     infoservice [shape = none ][ label = "" ];
 
-    subgraph cluster_normalstates {
+    subgraph cluster_configstates {
         style = invis;
         new;
         validated;
-        configured;
         pending;
+    }
+
+    subgraph cluster_runningstates {
+        style = invis;
         growing;
+        shrinking;
         running;
     }
 
     subgraph cluster_endingstates {
         style = invis;
-        shrinking;
         terminating;
         terminated;
+
+        terminating_all [shape = none][ label = ""]
     }
+
+    {rank=same shrinking terminating terminated}
 
     infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequests\l" ];
 
     new -> validated   [ label = "well\lformed" ];
-    new -> terminating [ label = "not\lwell\lformed\l" ];
 
-    validated -> configured  [ label = "factory\lconfigured\l" ][ style = dotted ];
-    validated -> terminating [ label = "configuration\ltimer\lexpired\l" ];
+    validated -> pending  [ label = "factory\ladds\lstatusinfo\lfield\l(factory just configured itself)" ][ style = dotted ];
 
-    configured -> pending     [ label = "start" ][ style = dotted ];
-    configured -> terminating [ label = "start\ltimer\lexpired\l" ];
+    pending    -> growing     [ label = "statusinfo.running > 0" ][ style = dotted ];
 
-    pending    -> growing     [ label = "at least\lone component\lof request\lfulfilled\l" ][ style = dotted ];
-    pending    -> terminating [ label = "factory\lreported\lerror\l" ][ style = dotted ];
+    growing    -> running     [ label = "all needed in\lstatusinfo.running\l" ][ style = dotted ];
 
-    growing    -> running     [ label = "all components\lof request\lfulfilled\l" ][ style = dotted ];
-    growing    -> shrinking   [ label = "factory\lreported\lerror" ][ style = dotted ];
+    growing    -> shrinking   [ label = "action = 'terminate'" ][ style = dotted ];
 
-    running    -> shrinking   [ label = "\lgentle\lshutdown\l" ][ style = dotted ];
-    running    -> shrinking   [ label = "factory\lreported\lerror\l" ][ style = dotted ];
+    running    -> growing     [ label = "less of needed in\lstatusinfo.running\l" ][ style = dotted ];
+    running    -> shrinking   [ label = "action = 'terminate'" ][ style = dotted ];
 
-    shrinking  -> terminating [ label = "no\lcomponents\lrunning\l"][ styel = dotted ];
-
+    shrinking  -> terminating [ label = "request.statusinfo.running = 0"][ style = dotted ];
 
     terminating -> terminated [ label = "wait\lfor\lcleanup\l" ];
+
+    terminating_all -> terminating [ label ="any\lerror\lfrom\lany\lstate\l" ]
+
 }
