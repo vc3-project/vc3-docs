@@ -185,7 +185,11 @@ There is some bug related to that line in readthedocs, so most people remove it.
 8. Import your project
 
 9. Admin settings change the following:
+
 Settings -> Programming Language -> Python -> Submit
+
 Settings -> Documentation type -> Sphinx Html
+
 Advanced Settings -> Requirements file -> docs/requirements.txt
+
 Disable PDF, EPUB
