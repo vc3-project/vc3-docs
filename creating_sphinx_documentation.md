@@ -118,7 +118,7 @@ vim _build/html/vc3client.html
 
 # Integrating it with Readthedocs
 
-Since the above is only be seen by yourself, unless you have a web server to put your files to, you can integrate sphinx with readthedocs, the advantage of this is that:
+Since the above can only be seen by yourself, unless you have a web server to put your files at, you can integrate sphinx with readthedocs, the advantage of this is that:
 
 - Documentation is regenerated with each git push 
 - So, if a new class is added to an already existing module, this will be updated without any manual update.
