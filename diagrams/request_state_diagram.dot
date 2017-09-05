@@ -45,17 +45,29 @@ digraph requests {
 
     pending    -> growing     [ label = "statusinfo.running > 0" ][ style = dotted ];
 
-    growing    -> running     [ label = "all needed in\lstatusinfo.running\l" ][ style = dotted ];
+    growing    -> running     [ label = "statusinfo.running == jobs requested" ][ style = dotted ];
 
-    growing    -> shrinking   [ label = "action = 'terminate'" ][ style = dotted ];
+    growing    -> shrinking   [ label = "statusinfo.running > jobs requested" ][ style = dotted ];
 
-    running    -> growing     [ label = "less of needed in\lstatusinfo.running\l" ][ style = dotted ];
-    running    -> shrinking   [ label = "action = 'terminate'" ][ style = dotted ];
+    running    -> terminating [ label = "action = 'terminate'" ][ style = dotted ];
 
-    shrinking  -> terminating [ label = "request.statusinfo.running = 0"][ style = dotted ];
 
-    terminating -> terminated [ label = "wait\lfor\lcleanup\l" ];
+
+    running    -> growing     [ label = "statusinfo.running < jobs requested" ][ style = dotted ];
+
+    running    -> shrinking   [ label = "statusinfo.running > jobs requested" ][ style = dotted ];
+
+    running    -> terminating [ label = "action = 'terminate'" ][ style = dotted ];
+
+
+    shrinking  -> growing     [ label = "statusinfo.running < jobs requested" ][ style = dotted ];
+
+    shrinking  -> running     [ label = "statusinfo.running == jobs requested" ][ style = dotted ];
+
+    shrinking  -> terminating [ label = "action = 'terminate'" ][ style = dotted ];
+
 
     terminating_all -> terminating [ label ="any\lerror\lfrom\lany\lstate\l" ]
 
+    terminating -> terminated  [ label "statusinfo.running == 0" ]
 }
