@@ -29,13 +29,14 @@ digraph requests {
 
     subgraph cluster_endingstates {
         style = invis;
-        terminating;
+        terminating [ label = "terminating\nset jobs requested = 0"];
+        cleaning;
         terminated;
 
         terminating_all [shape = none][ label = ""]
     }
 
-    {rank=same shrinking terminating terminated}
+    {rank=same cleaning terminating terminated}
 
     infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequest\l" ];
 
@@ -69,5 +70,7 @@ digraph requests {
 
     terminating_all -> terminating [ label ="any\lerror\lfrom\lany\lstate\l" ]
 
-    terminating -> terminated  [ label "statusinfo.running == 0" ]
+    terminating -> cleaning    [ label "statusinfo.running == 0" ]
+
+    cleaning -> terminated  [ label "garbage collected" ]
 }
