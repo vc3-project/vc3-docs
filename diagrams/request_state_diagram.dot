@@ -16,7 +16,7 @@ digraph requests {
     subgraph cluster_configstates {
         style = invis;
         new;
-        validated;
+        initializing;
         pending;
     }
 
@@ -30,27 +30,51 @@ digraph requests {
         terminating [ label = "terminating\nset jobs requested = 0"];
         cleanup;
         terminated;
+        failure;
 
         terminating_all [shape = none][ label = ""]
     }
 
-    {rank=same cleanup terminating terminated}
+    subgraph cluster_headnode {
+        label = "headnode";
+        h_boot [ label = "boot"];
+        h_initializing [ label = "initializing"];
+        h_running [ label = "running"];
+        h_failure [ label = "failure"];
+
+        h_terminating_all [shape = none][ label = ""]
+
+        {rank=same h_boot h_initializing h_running}
+        {rank=same h_failure h_terminating_all}
+    }
+
+    {rank=same cleanup terminating terminated running terminating_all}
 
     infoservice -> new [ style = dotted ][ label = "pull\lnew\lrequest\l" ];
 
-    new -> validated   [ label = "well\lformed" ];
+    new -> initializing   [ label = "request well formed" ];
 
-    validated -> pending  [ label = "factory\ladds\lstatusinfo\lfield\l(factory just configured itself)" ][ style = dotted ];
+    initializing -> initializing   [ label = "headnode\lnot running\l\l\l" ];
 
-    pending    -> running     [ label = "statusinfo.running > 0" ][ style = dotted ];
+    initializing -> pending [ label = "headnode\lis running"];
 
-    running    -> terminating [ label = "action = 'terminate'" ][ style = dotted ];
+    pending -> pending [ label = "statusinfo not set\lor\lstatusinfo.running < 1"];
+
+    pending    -> running     [ label = "statusinfo.running > 0" ];
+
+    terminating_all -> terminating [ label = "action = 'terminate'\lfrom any state" ];
+
+    terminating -> cleanup     [ label = "statusinfo.{running,idle} == 0" ];
+
+    cleanup     -> terminated  [ label = "garbage collected\lcleanup headnode" ];
 
 
-    terminating -> cleanup     [ label = "statusinfo.running == 0" ];
+    terminating_all -> failure [ label ="any error\lfrom any state.\lrunning set to 0" ];
+    failure -> terminating [ label = "action = 'terminate'" ];
 
-    cleanup     -> terminated  [ label = "garbage collected" ];
+    initializing -> h_boot [ style = dotted ][label = "setting up headnode"]
+    h_boot -> h_initializing [ label ="openstack boots vm" ];
+    h_initializing -> h_running [ label ="playbook finishes running" ];
 
-
-    terminating_all -> terminating [ label ="any\lerror\lfrom\lany\lstate\l" ];
+    h_terminating_all -> h_failure [ label ="any error\lfrom any state." ];
 }
