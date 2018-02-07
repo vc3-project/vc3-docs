@@ -58,6 +58,8 @@ digraph requests {
 
     initializing -> pending [ label = "headnode\lis running"];
 
+    initializing -> failure [ label = "\lheadnode\lfailure"];
+
     pending -> pending [ label = "statusinfo not set\lor\lstatusinfo.running < 1"];
 
     pending    -> running     [ label = "statusinfo.running > 0" ];
